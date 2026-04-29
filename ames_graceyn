@@ -1,0 +1,36 @@
+```{r}
+library(tidyverse)
+library(readr)
+library(stringr)
+```
+
+```{r}
+# Checking null values
+raw_ames = read.csv('ames_de_cock.csv', na.strings = c("", "NA"))
+raw_ames
+```
+
+```{r}
+ames = raw_ames |>
+  mutate(date = as.Date(paste(as.character(Yr.Sold), as.character(Mo.Sold), '01', sep = '-')))
+```
+
+```{r}
+ames |>
+  filter(Overall.Cond == 5) |>
+  filter(X1st.Flr.SF <= 2000 & X1st.Flr.SF >= 1900) |>
+  ggplot() +
+  geom_point(aes(x = date, y = SalePrice))
+```
+
+```{r}
+avg_sale = ames |>
+  filter(Overall.Cond == 5) |>
+  #filter(X1st.Flr.SF <= 2000 & X1st.Flr.SF >= 1800) |>
+  group_by(date) |>
+  summarize(mean(SalePrice))
+colnames(avg_sale)[2] = 'avg.sale'
+avg_sale |>
+  ggplot() +
+  geom_line(aes(x = date, y = avg.sale))
+```

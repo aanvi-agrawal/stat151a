@@ -1,4 +1,34 @@
-ames$total_bath <- ames$Full.Bath +
-                   0.5 * ames$Half.Bath +
-                   ames$Bsmt.Full.Bath +
-                   0.5 * ames$Bsmt.Half.Bath
+```{r}
+ames <- raw_ames |>
+  mutate(
+    date = as.Date(paste(as.character(Yr.Sold), as.character(Mo.Sold), "01", sep = "-")),
+    log_price = log(SalePrice),
+    Total.Bath = Full.Bath + 0.5 * Half.Bath +
+                 Bsmt.Full.Bath + 0.5 * Bsmt.Half.Bath
+  ) |>
+  filter(Gr.Liv.Area <= 4000)
+ames <- ames[, c(
+  "log_price",
+  "SalePrice",
+  "Bedroom.AbvGr",
+  "Total.Bath",
+  "Gr.Liv.Area",
+  "Overall.Qual",
+  "Year.Built",
+  "Neighborhood"
+)]
+ames <- na.omit(ames)
+ames$Neighborhood <- as.factor(ames$Neighborhood)
+model <- lm(log_price ~ Bedroom.AbvGr + Total.Bath +
+              Gr.Liv.Area + Overall.Qual +
+              Year.Built + Neighborhood,
+            data = ames)
+```
+
+# the correlations
+```{r}
+cor(ames[, c("Bedroom.AbvGr",
+                   "Total.Bath",
+                   "Gr.Liv.Area",
+                   "Overall.Qual")])
+```

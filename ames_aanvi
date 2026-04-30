@@ -25,10 +25,44 @@ model <- lm(log_price ~ Bedroom.AbvGr + Total.Bath +
             data = ames)
 ```
 
-# the correlations
+# the correlation map
 ```{r}
-cor(ames[, c("Bedroom.AbvGr",
-                   "Total.Bath",
-                   "Gr.Liv.Area",
-                   "Overall.Qual")])
+vars <- ames[, c("log_price",
+                 "Bedroom.AbvGr",
+                 "Total.Bath",
+                 "Gr.Liv.Area",
+                 "Overall.Qual")]
+vars <- vars |>
+  rename(
+    "Log Price" = log_price,
+    "Bedrooms" = Bedroom.AbvGr,
+    "Bathrooms" = Total.Bath,
+    "Living Area" = Gr.Liv.Area,
+    "Quality" = Overall.Qual
+  )
+corr_mat <- cor(vars, use = "complete.obs")
+corr_mat <- abs(corr_mat)
+corr_df <- melt(corr_mat)
+ggplot(corr_df, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile(color = "black") +
+  geom_text(aes(label = round(value, 2)), size = 3) +
+  scale_fill_gradient(low = "white", high = "red",
+                      name = "Correlation") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Correlation Heatmap",
+       x = "",
+       y = "")
+```
+
+# model
+```{r}
+model <- lm(log_price ~ Bedroom.AbvGr + Total.Bath +
+              Gr.Liv.Area + Overall.Qual +
+              Year.Built + Neighborhood,
+            data = ames)
+summary(model)
+```
+```{r}
+linearHypothesis(model, "Bedroom.AbvGr = Total.Bath")
 ```

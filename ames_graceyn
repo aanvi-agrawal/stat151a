@@ -36,11 +36,14 @@ avg_sale |>
 ```
 
 ```{r}
-regressors = data_frame(colnames(ames), coef = 1:83)
+regressors = data_frame(colnames(ames), coef = 1:83, p_val = 1:83)
 regressors['coef'] = as.double(regressors[['coef']])
+regressors['p_val'] = as.double(regressors[['p_val']])
 for (i in 1:length(colnames(ames))) {
   regressors[i,2] = lm(SalePrice ~ ames[[i[1]]], data = ames)$coefficients[[2]]
+  regressors[i,3] = summary(lm(SalePrice ~ ames[[i[1]]], data = ames))$coefficients[[2,4]]
 }
 regressors |>
+  filter(p_val <= .05) |>
   arrange(desc(coef))
 ```

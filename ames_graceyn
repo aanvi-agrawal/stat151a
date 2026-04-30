@@ -41,5 +41,6 @@ regressors['coef'] = as.double(regressors[['coef']])
 for (i in 1:length(colnames(ames))) {
   regressors[i,2] = lm(SalePrice ~ ames[[i[1]]], data = ames)$coefficients[[2]]
 }
-regressors
+regressors |>
+  arrange(desc(coef))
 ```

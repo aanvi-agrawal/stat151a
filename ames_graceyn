@@ -34,3 +34,12 @@ avg_sale |>
   ggplot() +
   geom_line(aes(x = date, y = avg.sale))
 ```
+
+```{r}
+regressors = data_frame(colnames(ames), coef = 1:83)
+regressors['coef'] = as.double(regressors[['coef']])
+for (i in 1:length(colnames(ames))) {
+  regressors[i,2] = lm(SalePrice ~ ames[[i[1]]], data = ames)$coefficients[[2]]
+}
+regressors
+```

@@ -1,0 +1,2 @@
+df$total_bath = df$`Full Bath` + 0.5*df$`Half Bath` +
+                df$`Bsmt Full Bath` + 0.5*df$`Bsmt Half Bath`

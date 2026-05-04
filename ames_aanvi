@@ -66,3 +66,13 @@ summary(model)
 ```{r}
 linearHypothesis(model, "Bedroom.AbvGr = Total.Bath")
 ```
+# to say that we really cant use other data/vars as regressors
+```{r}
+raw_ames1 <- raw_ames
+model_data <- na.omit(raw_ames1)
+bad_cols <- names(model_data)[sapply(model_data, function(x) {
+  is.factor(x) || is.character(x)
+}) & sapply(model_data, function(x) length(unique(x)) < 2)]
+bad_cols
+model_data <- model_data[, !(names(model_data) %in% bad_cols)]
+```

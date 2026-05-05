@@ -35,3 +35,18 @@ summary(model_quad)
 # this one is interesting because it shows that as you add more bedrooms, 
 # the price reduction increases but as you add more bathrooms, your price 
 # actually increases
+
+
+
+```{r}
+
+model_ratio <- lm(SalePrice ~ 
+                    I(Bedroom.AbvGr / Gr.Liv.Area) +
+                    I(Total.Bath / Gr.Liv.Area) +
+                    Gr.Liv.Area +
+                    Overall.Qual + Neighborhood,
+                  data = ames)
+
+summary(model_ratio)
+
+```

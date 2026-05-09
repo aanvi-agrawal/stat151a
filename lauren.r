@@ -79,5 +79,36 @@ ggplot(ames1, aes(x = Bedroom.AbvGr, y = SalePrice)) +
   theme_bw()
 
 ```
+```{r}
+num_knots <- 5
+quants <- 1:num_knots / (num_knots + 1)
+knots2 <- quantile(ames1$Bedroom.AbvGr, probs = quants, na.rm = TRUE)
+regs2 <- bSpline(
+  ames1$Bedroom.AbvGr,
+  knots = knots,
+  degree = 0
+)
 
+x2 <- seq(
+  min(ames1$Bedroom.AbvGr),
+  max(ames1$Bedroom.AbvGr),
+  length.out = 100
+)
+
+newdata2 <- data.frame(Bedroom.AbvGr = x2)
+
+lmBed_Sale_fit <- lm(SalePrice ~ bSpline(Bedroom.AbvGr, df=4, degree=2), ames1)
+
+yhat2 <- predict(lmBed_Sale_fit, newdata = newdata2)
+
+ggplot(ames1, aes(x = Bedroom.AbvGr, y = SalePrice)) +
+  geom_point(alpha = 0.3) +
+  geom_line(
+    data = data.frame(Bedroom.AbvGr = x2, yhat = yhat2),
+    aes(x = Bedroom.AbvGr, y = yhat),
+    color = "red",
+    linewidth = 1.6
+  ) +
+  theme_bw()
+```
 
